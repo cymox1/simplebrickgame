@@ -35,8 +35,8 @@ public class Wall {
 
             for (Rect r : wallrects) {
                 if (Rect.intersects(r, brickRect)) {
-//                    brick.setYPosition(r.top - (brick.height(brickRect) + gap));
-                    return false; //hit other bricks in wall
+                    brick.setYPosition(r.top - (brick.height(brickRect) + gap));
+                    return false; //landed on the wall
                 }
             }
         }
