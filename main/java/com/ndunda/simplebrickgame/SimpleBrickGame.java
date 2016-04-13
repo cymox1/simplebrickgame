@@ -98,7 +98,7 @@ public class SimpleBrickGame extends Activity {
             display.getSize(size);
             screenWidth = size.x;
             screenHeight = size.y;
-            wall = new Wall(screenWidth, screenHeight);
+            wall = new Wall();
             brick = new Brick(screenWidth, screenHeight, wall);
 
             // Initialize ourHolder and paint objects
@@ -124,9 +124,6 @@ public class SimpleBrickGame extends Activity {
 // We will also do other things like collision detection.
         public void update() {
             brick = brick.update();
-            if (!wall.brickPositionAllowed(brick)) {
-                playing = false;
-            }
         }
 
         // Draw the newly updated scene
