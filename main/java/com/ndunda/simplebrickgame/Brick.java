@@ -10,43 +10,41 @@ import java.util.ArrayList;
  */
 public class Brick {
     //Brick Types
-    private static int TYPE_FLAT_LINE = 1;
-    private static int TYPE_VERT_LINE = 2;
+    private static int TYPE_LINE = 1;
     private static int TYPE_TEE = 3;
     private static int TYPE_L = 4;
     private static int TYPE_INV_L = 5;
     private static int TYPE_PLUS = 6;
-    private static int[] BRICK_TYPES = new int[]{TYPE_FLAT_LINE, TYPE_VERT_LINE, TYPE_TEE, TYPE_L, TYPE_INV_L, TYPE_PLUS};
+    private static int[] BRICK_TYPES = new int[]{TYPE_LINE, TYPE_TEE, TYPE_L, TYPE_INV_L, TYPE_PLUS};
+    public static int ROW_COUNT = 20;
 
     private int brickYPosition = 0;
-    private double brickSize;
+    public double cellSize;
     private int brickXPosition;
     private int journeySeconds = 6;
-    private int screenWidth;
-    private int screenHeight;
+    public int screenWidth;
+    public int screenHeight;
     private Wall wall;
     private long startTime;
-    private int rowCount = 20;
     private int brickType;
-    private int rotation = 0;
-    private int acceleration = 1;
+    private int rotation;
 
 
     public Brick(int screenWidth, int screenHeight, Wall wall) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.wall = wall;
-        brickSize = (float) (1 * screenWidth) / rowCount;
-        float gap = (float) (0 * screenWidth) / (rowCount - 1);
-        int brickRow = rowCount / 2;
+        cellSize = (float) (1 * screenWidth) / ROW_COUNT;
+        float gap = (float) (0 * screenWidth) / (ROW_COUNT - 1);
+        int brickRow = ROW_COUNT / 2;
         brickType = BRICK_TYPES[(int) (Math.random() * BRICK_TYPES.length)];
-//        brickType = TYPE_FLAT_LINE;
+        rotation = (int) (Math.random() * 4) * 90;
+//        brickType = TYPE_LINE;
 //        rotation = 90;
-        brickXPosition = (int) Math.ceil(brickRow * (brickSize + gap));
+        brickXPosition = (int) Math.ceil(brickRow * (cellSize + gap));
     }
 
     public void setYPosition(int yposition) {
-        Log.i("SetPositon", yposition + "");
         brickYPosition = yposition;
     }
 
@@ -68,14 +66,12 @@ public class Brick {
     public int height(Rect fromCell) {
         int top = Integer.MAX_VALUE;
         int bottom = fromCell.bottom;
-        Log.i("Bottom", bottom + "");
 
         for (Rect r : getCells()) {
             if (r.top < top) {
                 top = r.top;
             }
         }
-        Log.i("Height", "" + (bottom - top));
         return bottom - top;
     }
 
@@ -116,17 +112,16 @@ public class Brick {
                     }
                 }
             }
-            Log.i("Rotate", "leftIntersection " + leftIntersection + " rightIntersection " + rightIntersection + " translation " + xtranslate);
             if (leftIntersection && rightIntersection) {
                 break;//rotation not possible
             } else if (!(leftIntersection || rightIntersection)) {
                 validated = true;//rotation possible;
                 break;
             } else if (leftIntersection) {
-                xtranslate += brickSize;
+                xtranslate += cellSize;
                 translateRightTried = true;
             } else if (rightIntersection) {
-                xtranslate -= brickSize;
+                xtranslate -= cellSize;
                 tranlateLeftTried = true;
             }
         }
@@ -155,17 +150,16 @@ public class Brick {
     }
 
     public void translate(int rows) {
-        Log.i("Translating", "Was " + brickXPosition + " Add " + rows);
         for (int k = 1; k <= Math.abs(rows); k++) {
             //Translate one row at a time
             int direction = (rows / Math.abs(rows));
-            brickXPosition += direction * brickSize;
+            brickXPosition += direction * cellSize;
 
             for (Rect brickRect : getCells()) {
                 Rect wallIntersect = intersectsWall(brickRect);
                 if (wallIntersect != null) {
                     //translated into a wall, go back one step and cancel translation
-                    brickXPosition += -direction * brickSize;
+                    brickXPosition += -direction * cellSize;
                     return;
                 }
             }
@@ -185,15 +179,13 @@ public class Brick {
         }
 
         if (leftmost < 0) {
-//            Log.i("Beyond", "Was beyond left border: " + leftmost);
-            translate((int) Math.ceil(-leftmost / brickSize));
+            translate((int) Math.ceil(-leftmost / cellSize));
         } else if (rightmost > screenWidth) {
-//            Log.i("Beyond", "Was beyond right border: " + rightmost);
-            translate((int) Math.ceil(-(rightmost - screenWidth) / brickSize));
+            translate((int) Math.ceil(-(rightmost - screenWidth) / cellSize));
         }
     }
 
-    private boolean stepDown() {
+    public boolean stepDown() {
         long currentTime = System.currentTimeMillis();
         this.brickYPosition = (int) (((float) (currentTime - startTime) / (journeySeconds * 1000)) * screenHeight);
         for (Rect brickRect : getCells()) {
@@ -238,11 +230,11 @@ public class Brick {
     }
 
     public ArrayList<Rect> getCells(int rotation, int xtranslation) {
-        int bsize = (int) Math.ceil(brickSize);
+        int bsize = (int) Math.ceil(cellSize);
         int xpos = brickXPosition + xtranslation;
         int ypos = brickYPosition;
         ArrayList<Rect> brickCells = new ArrayList<Rect>();
-        if (brickType == TYPE_FLAT_LINE) {
+        if (brickType == TYPE_LINE) {
             if (rotation % 180 == 90) {
 //                xpos += bsize;
             } else {
@@ -254,20 +246,6 @@ public class Brick {
                     xpos += bsize;
                 } else {
                     ypos += bsize;
-                }
-            }
-        } else if (brickType == TYPE_VERT_LINE) {
-            if (rotation % 180 == 0) {
-//                xpos += bsize;
-            } else {
-                xpos -= bsize;
-            }
-            for (int k = 0; k < 4; k++) {
-                brickCells.add(new Rect(xpos, ypos, xpos + bsize, ypos + bsize));
-                if (rotation % 180 == 0) {
-                    ypos += bsize;
-                } else {
-                    xpos += bsize;
                 }
             }
         } else if (brickType == TYPE_TEE) {
@@ -392,7 +370,7 @@ public class Brick {
                 }
             }
         } else {
-            Log.e("getCells", "Unknow brick types " + brickType);
+            Log.e("getCells", "Unknown brick types " + brickType);
         }
 
         return brickCells;

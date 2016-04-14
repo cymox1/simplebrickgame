@@ -2,12 +2,17 @@ package com.ndunda.simplebrickgame;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -23,7 +28,7 @@ public class SimpleBrickGame extends Activity {
     // It will also hold the logic of the game
     // and respond to screen touches as well
     GameView gameView;
-
+    int level;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,8 @@ public class SimpleBrickGame extends Activity {
         gameView = new GameView(this);
         setContentView(gameView);
 
+        Intent intent = getIntent();
+        level = intent.getIntExtra("level", 1);
     }
 
     // Here is our implementation of GameView
@@ -124,6 +131,19 @@ public class SimpleBrickGame extends Activity {
 // We will also do other things like collision detection.
         public void update() {
             brick = brick.update();
+            if (!brick.stepDown()) {
+                playing = false;
+                Message msg = new Message();
+                msg.obj = "Sorry, you failed level " + level + "!";
+                msg.arg1 = level;
+                handler.sendMessage(msg);
+            } else if (wall.completedLines >= 3) {
+                playing = false;
+                Message msg = new Message();
+                msg.obj = "Congrats, you completed level " + level + "!";
+                msg.arg1 = level + 1;
+                handler.sendMessage(msg);
+            }
         }
 
         // Draw the newly updated scene
@@ -136,12 +156,18 @@ public class SimpleBrickGame extends Activity {
                 canvas = ourHolder.lockCanvas();
 
                 // Draw the background color
-                canvas.drawColor(Color.argb(255, 26, 128, 182));
+                Drawable d = ResourcesCompat.getDrawable(getResources(), R.drawable.bricks, null);
+                d.setBounds(0, 0, screenWidth, screenHeight);
+                d.draw(canvas);
 
                 // Choose the brush color for drawing
-                paint.setColor(Color.argb(255, 249, 129, 0));
+                paint.setColor(Color.argb(150, 0, 0, 255));
 //                paint.setStyle(Paint.Style.STROKE);
 
+
+                //Draw text scores
+                paint.setTextSize(20);
+                canvas.drawText("Lines: " + wall.completedLines, 10, 20, paint);
 
                 //draw wall
                 for (Rect r : wall.getWallRects()) {
@@ -192,7 +218,6 @@ public class SimpleBrickGame extends Activity {
                 case MotionEvent.ACTION_UP:
                     float hdistance = motionEvent.getX() - startTouchX;
                     float vdistance = motionEvent.getY() - startTouchY;
-                    Log.i("Swipe Distance", hdistance + " V " + vdistance);
                     if (Math.abs(hdistance) > MIN_SWIPE_DISTANCE || Math.abs(vdistance) > MIN_SWIPE_DISTANCE) {
                         brick.translate(hdistance, vdistance);
                     } else {
@@ -232,5 +257,15 @@ public class SimpleBrickGame extends Activity {
         gameView.pause();
     }
 
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Intent intent = new Intent(SimpleBrickGame.this, AdvertActivity.class);
+            intent.putExtra("message", msg.obj.toString());
+            intent.putExtra("level", msg.arg1);
+            startActivity(intent);
+            finish();
+        }
+    };
 
 }
