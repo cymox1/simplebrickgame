@@ -15,7 +15,9 @@ public class Brick {
     private static int TYPE_L = 4;
     private static int TYPE_INV_L = 5;
     private static int TYPE_PLUS = 6;
-    private static int[] BRICK_TYPES = new int[]{TYPE_LINE, TYPE_TEE, TYPE_L, TYPE_INV_L, TYPE_PLUS};
+    private static int TYPE_STEP = 7;
+    private static int TYPE_INV_STEP = 8;
+    private static int[] BRICK_TYPES = new int[]{TYPE_LINE, TYPE_TEE, TYPE_L, TYPE_INV_L, TYPE_PLUS, TYPE_STEP, TYPE_INV_STEP};
     public static int ROW_COUNT = 20;
 
     private int brickYPosition = 0;
@@ -46,21 +48,6 @@ public class Brick {
 
     public void setYPosition(int yposition) {
         brickYPosition = yposition;
-    }
-
-    public int width() {
-        int left = Integer.MAX_VALUE;
-        int right = Integer.MIN_VALUE;
-
-        for (Rect r : getCells()) {
-            if (r.left < left) {
-                left = r.left;
-            }
-            if (r.right > right) {
-                right = r.right;
-            }
-        }
-        return right - left;
     }
 
     public int height(Rect fromCell) {
@@ -367,6 +354,46 @@ public class Brick {
                         xpos += (bsize + bsize);
                     }
                     brickCells.add(new Rect(xpos, vypos, xpos + bsize, vypos + bsize));
+                }
+            }
+        } else if (brickType == TYPE_STEP) {
+            if (rotation % 180 == 90) {
+                ypos += bsize;
+            }
+            for (int k = 0; k < 4; k++) {
+                brickCells.add(new Rect(xpos, ypos, xpos + bsize, ypos + bsize));
+                if (k == 1) {
+                    if (rotation % 180 == 0) {
+                        xpos += bsize;
+                    } else {
+                        ypos -= bsize;
+                    }
+                } else {
+                    if (rotation % 180 == 0) {
+                        ypos += bsize;
+                    } else {
+                        xpos += bsize;
+                    }
+                }
+            }
+        } else if (brickType == TYPE_INV_STEP) {
+            if (rotation % 180 == 0) {
+                xpos += bsize;
+            }
+            for (int k = 0; k < 4; k++) {
+                brickCells.add(new Rect(xpos, ypos, xpos + bsize, ypos + bsize));
+                if (k == 1) {
+                    if (rotation % 180 == 0) {
+                        xpos -= bsize;
+                    } else {
+                        ypos += bsize;
+                    }
+                } else {
+                    if (rotation % 180 == 0) {
+                        ypos += bsize;
+                    } else {
+                        xpos += bsize;
+                    }
                 }
             }
         } else {
