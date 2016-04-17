@@ -128,9 +128,9 @@ public class Brick {
     }
 
     public void translate(float hdistance, float vdistance) {
-        if (Math.abs(hdistance) > 50) {
-            translate((int) (hdistance / 50));
-        } else if (vdistance > 50) {
+        if (Math.abs(hdistance) > cellSize * 2) {
+            translate((int) (hdistance / cellSize * 2));
+        } else if (vdistance > cellSize * 2) {
 //            journeySeconds = 3;
         }
         validatePosition();

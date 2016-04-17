@@ -29,6 +29,7 @@ public class SimpleBrickGame extends Activity {
     // and respond to screen touches as well
     GameView gameView;
     int level;
+    int winningLines = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +138,7 @@ public class SimpleBrickGame extends Activity {
                 msg.obj = "Sorry, you failed level " + level + "!";
                 msg.arg1 = level;
                 handler.sendMessage(msg);
-            } else if (wall.completedLines >= 3) {
+            } else if (wall.completedLines >= winningLines) {
                 playing = false;
                 Message msg = new Message();
                 msg.obj = "Congrats, you completed level " + level + "!";
@@ -166,8 +167,8 @@ public class SimpleBrickGame extends Activity {
 
 
                 //Draw text scores
-                paint.setTextSize(20);
-                canvas.drawText("Lines: " + wall.completedLines, 10, 20, paint);
+                paint.setTextSize((int) brick.cellSize);
+                canvas.drawText("Level: " + level + " Lines: " + wall.completedLines + "/" + winningLines, 10, (int) brick.cellSize, paint);
 
                 //draw wall
                 for (Rect r : wall.getWallRects()) {
