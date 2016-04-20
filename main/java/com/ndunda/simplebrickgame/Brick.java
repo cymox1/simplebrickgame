@@ -18,7 +18,7 @@ public class Brick {
     private static int TYPE_PLUS = 6;
     private static int TYPE_STEP = 7;
     private static int TYPE_INV_STEP = 8;
-    private static int ALPHA = 150;
+    private static int ALPHA = 220;
     private static int[] BRICK_TYPES = new int[]{TYPE_LINE, TYPE_TEE, TYPE_L, TYPE_INV_L, TYPE_PLUS, TYPE_STEP, TYPE_INV_STEP};
     public static int[] COLORS = new int[]{
             Color.argb(ALPHA, 255, 20, 14),

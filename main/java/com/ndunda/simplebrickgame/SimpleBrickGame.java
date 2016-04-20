@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -174,13 +175,15 @@ public class SimpleBrickGame extends Activity {
                 for (Cell c : wall.getWallRects()) {
                     Rect r = c.rect;
                     paint.setColor(c.color);
-                    canvas.drawRect(r.left, r.top, r.right, r.bottom, paint);
+//                    canvas.drawRect(r.left, r.top, r.right, r.bottom, paint);
+                    canvas.drawRoundRect(new RectF(r), 20, 20, paint);
                 }
 
                 //draw brick
                 paint.setColor(brick.color);
                 for (Rect r : brick.getCells()) {
-                    canvas.drawRect(r.left, r.top, r.right, r.bottom, paint);
+//                    canvas.drawRect(r, paint);
+                    canvas.drawRoundRect(new RectF(r), 20, 20, paint);
                 }
 
                 // Draw everything to the screen
