@@ -171,11 +171,14 @@ public class SimpleBrickGame extends Activity {
                 canvas.drawText("Level: " + level + " Lines: " + wall.completedLines + "/" + winningLines, 10, (int) brick.cellSize, paint);
 
                 //draw wall
-                for (Rect r : wall.getWallRects()) {
+                for (Cell c : wall.getWallRects()) {
+                    Rect r = c.rect;
+                    paint.setColor(c.color);
                     canvas.drawRect(r.left, r.top, r.right, r.bottom, paint);
                 }
 
                 //draw brick
+                paint.setColor(brick.color);
                 for (Rect r : brick.getCells()) {
                     canvas.drawRect(r.left, r.top, r.right, r.bottom, paint);
                 }

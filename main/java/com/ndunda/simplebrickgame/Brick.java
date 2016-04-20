@@ -1,5 +1,6 @@
 package com.ndunda.simplebrickgame;
 
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -17,7 +18,17 @@ public class Brick {
     private static int TYPE_PLUS = 6;
     private static int TYPE_STEP = 7;
     private static int TYPE_INV_STEP = 8;
+    private static int ALPHA = 150;
     private static int[] BRICK_TYPES = new int[]{TYPE_LINE, TYPE_TEE, TYPE_L, TYPE_INV_L, TYPE_PLUS, TYPE_STEP, TYPE_INV_STEP};
+    public static int[] COLORS = new int[]{
+            Color.argb(ALPHA, 255, 20, 14),
+            Color.argb(ALPHA, 0, 229, 238),
+            Color.argb(ALPHA, 0, 238, 118),
+            Color.argb(ALPHA, 255, 153, 18),
+            Color.argb(ALPHA, 255, 0, 0),
+            Color.argb(ALPHA, 191, 62, 255),
+            Color.argb(ALPHA, 127, 255, 0)
+    };
     public static int ROW_COUNT = 20;
 
     private int brickYPosition = 0;
@@ -30,6 +41,7 @@ public class Brick {
     private long startTime;
     private int brickType;
     private int rotation;
+    public int color;
 
 
     public Brick(int screenWidth, int screenHeight, Wall wall) {
@@ -39,7 +51,9 @@ public class Brick {
         cellSize = (float) (1 * screenWidth) / ROW_COUNT;
         float gap = (float) (0 * screenWidth) / (ROW_COUNT - 1);
         int brickRow = ROW_COUNT / 2;
-        brickType = BRICK_TYPES[(int) (Math.random() * BRICK_TYPES.length)];
+        int brick_index = (int) (Math.random() * BRICK_TYPES.length);
+        brickType = BRICK_TYPES[brick_index];
+        color = COLORS[brick_index];
         rotation = (int) (Math.random() * 4) * 90;
 //        brickType = TYPE_LINE;
 //        rotation = 90;
@@ -190,9 +204,9 @@ public class Brick {
     }
 
     private Rect intersectsWall(Rect brickRect) {
-        for (Rect r : wall.getWallRects()) {
-            if (Rect.intersects(r, brickRect)) {
-                return r;
+        for (Cell c : wall.getWallRects()) {
+            if (Rect.intersects(c.rect, brickRect)) {
+                return c.rect;
             }
         }
         return null;
