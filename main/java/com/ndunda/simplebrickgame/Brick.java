@@ -142,9 +142,11 @@ public class Brick {
     }
 
     public void translate(float hdistance, float vdistance) {
-        if (Math.abs(hdistance) > cellSize * 2) {
-            translate((int) (hdistance / cellSize * 2));
-        } else if (vdistance > cellSize * 2) {
+        float translate_rate = 1.5f;
+        if (Math.abs(hdistance) > cellSize * translate_rate) {
+            translate((int) (hdistance / (cellSize * translate_rate)));
+        } else if (vdistance > cellSize * translate_rate
+                ) {
 //            journeySeconds = 3;
         }
         validatePosition();

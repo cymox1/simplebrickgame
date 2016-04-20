@@ -158,9 +158,10 @@ public class SimpleBrickGame extends Activity {
                 canvas = ourHolder.lockCanvas();
 
                 // Draw the background color
-                Drawable d = ResourcesCompat.getDrawable(getResources(), R.drawable.bricks, null);
-                d.setBounds(0, 0, screenWidth, screenHeight);
-                d.draw(canvas);
+//                Drawable d = ResourcesCompat.getDrawable(getResources(), R.drawable.bricks, null);
+//                d.setBounds(0, 0, screenWidth, screenHeight);
+//                d.draw(canvas);
+                canvas.drawColor(Color.argb(255, 255, 255, 255));
 
                 // Choose the brush color for drawing
                 paint.setColor(Color.argb(150, 0, 0, 255));
@@ -172,18 +173,19 @@ public class SimpleBrickGame extends Activity {
                 canvas.drawText("Level: " + level + " Lines: " + wall.completedLines + "/" + winningLines, 10, (int) brick.cellSize, paint);
 
                 //draw wall
+                float radius = 15f;
                 for (Cell c : wall.getWallRects()) {
                     Rect r = c.rect;
                     paint.setColor(c.color);
 //                    canvas.drawRect(r.left, r.top, r.right, r.bottom, paint);
-                    canvas.drawRoundRect(new RectF(r), 20, 20, paint);
+                    canvas.drawRoundRect(new RectF(r), radius, radius, paint);
                 }
 
                 //draw brick
                 paint.setColor(brick.color);
                 for (Rect r : brick.getCells()) {
 //                    canvas.drawRect(r, paint);
-                    canvas.drawRoundRect(new RectF(r), 20, 20, paint);
+                    canvas.drawRoundRect(new RectF(r), radius, radius, paint);
                 }
 
                 // Draw everything to the screen
