@@ -9,11 +9,9 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -21,7 +19,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 public class SimpleBrickGame extends Activity {
 
@@ -132,8 +129,10 @@ public class SimpleBrickGame extends Activity {
 // In later projects we will have dozens (arrays) of objects.
 // We will also do other things like collision detection.
         public void update() {
+            Brick oldbrick = brick;
             brick = brick.update();
-            if (!brick.stepDown()) {
+            if (brick.gameIsOver()) {
+                //We have  a new brick which can not even step down.
                 playing = false;
                 Message msg = new Message();
                 msg.obj = "Sorry, you failed level " + level + "!";

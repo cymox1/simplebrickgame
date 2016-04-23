@@ -19,6 +19,7 @@ public class Brick {
     private static int TYPE_STEP = 7;
     private static int TYPE_INV_STEP = 8;
     private static int ALPHA = 220;
+    private static int INITIAL_Y_POS = 0;
     private static int[] BRICK_TYPES = new int[]{TYPE_LINE, TYPE_TEE, TYPE_L, TYPE_INV_L, TYPE_PLUS, TYPE_STEP, TYPE_INV_STEP};
     public static int[] COLORS = new int[]{
             Color.argb(ALPHA, 255, 20, 14),
@@ -31,7 +32,7 @@ public class Brick {
     };
     public static int ROW_COUNT = 20;
 
-    private int brickYPosition = 0;
+    private int brickYPosition;
     public double cellSize;
     private int brickXPosition;
     private int journeySeconds = 6;
@@ -58,6 +59,7 @@ public class Brick {
 //        brickType = TYPE_LINE;
 //        rotation = 90;
         brickXPosition = (int) Math.ceil(brickRow * (cellSize + gap));
+        brickYPosition = INITIAL_Y_POS;
     }
 
     public void setYPosition(int yposition) {
@@ -190,7 +192,11 @@ public class Brick {
 
     public boolean stepDown() {
         long currentTime = System.currentTimeMillis();
+        int lastYPosition = brickYPosition;
         this.brickYPosition = (int) (((float) (currentTime - startTime) / (journeySeconds * 1000)) * screenHeight);
+        if (brickYPosition == lastYPosition) {
+            return true;
+        }
         for (Rect brickRect : getCells()) {
             if (brickRect.bottom > screenHeight) {
                 setYPosition(screenHeight - (height(brickRect)));
@@ -203,6 +209,10 @@ public class Brick {
             }
         }
         return true;
+    }
+
+    public boolean gameIsOver() {
+        return !stepDown() && brickYPosition < INITIAL_Y_POS;
     }
 
     private Rect intersectsWall(Rect brickRect) {

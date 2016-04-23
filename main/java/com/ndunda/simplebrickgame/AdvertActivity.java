@@ -95,21 +95,23 @@ public class AdvertActivity extends AppCompatActivity {
     }
 
     private void showInterstitial() {
+        goToNextLevel();
         // Show the ad if it's ready. Otherwise toast and reload the ad.
-        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-        } else {
-            Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show();
-            goToNextLevel();
-        }
+//        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
+//            mInterstitialAd.show();
+//        } else {
+//            Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show();
+//            goToNextLevel();
+//        }
     }
 
     private void loadInterstitial() {
+        mNextLevelButton.setEnabled(true);
         // Disable the next level button and load the ad.
-        mNextLevelButton.setEnabled(false);
-        AdRequest adRequest = new AdRequest.Builder()
-                .setRequestAgent("android_studio:ad_template").build();
-        mInterstitialAd.loadAd(adRequest);
+//        mNextLevelButton.setEnabled(false);
+//        AdRequest adRequest = new AdRequest.Builder()
+//                .setRequestAgent("android_studio:ad_template").build();
+//        mInterstitialAd.loadAd(adRequest);
     }
 
     private void goToNextLevel() {
