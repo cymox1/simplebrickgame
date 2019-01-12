@@ -33,7 +33,7 @@ public class Brick {
     public static int ROW_COUNT = 20;
 
     private int brickYPosition;
-    public double cellSize;
+    private double cellSize;
     private int brickXPosition;
     private int journeySeconds = 6;
     public int screenWidth;
@@ -64,6 +64,14 @@ public class Brick {
 
     public void setYPosition(int yposition) {
         brickYPosition = yposition;
+    }
+
+    public int getBrickXPosition() {
+        return brickXPosition;
+    }
+
+    public double getCellSize() {
+        return cellSize;
     }
 
     public int height(Rect fromCell) {
@@ -143,18 +151,13 @@ public class Brick {
         return validated;
     }
 
-    public void translate(float hdistance, float vdistance) {
-        float translate_rate = 1.5f;
-        if (Math.abs(hdistance) > cellSize * translate_rate) {
-            translate((int) (hdistance / (cellSize * translate_rate)));
-        } else if (vdistance > cellSize * translate_rate
-                ) {
-//            journeySeconds = 3;
-        }
+    public void translate(float hdistance, float starting_position) {
+        float move_distance = (starting_position + hdistance - brickXPosition);
+        do_translate((int) (move_distance / cellSize));
         validatePosition();
     }
 
-    public void translate(int rows) {
+    public void do_translate(int rows) {
         for (int k = 1; k <= Math.abs(rows); k++) {
             //Translate one row at a time
             int direction = (rows / Math.abs(rows));
@@ -184,9 +187,9 @@ public class Brick {
         }
 
         if (leftmost < 0) {
-            translate((int) Math.ceil(-leftmost / cellSize));
+            do_translate((int) Math.ceil(-leftmost / cellSize));
         } else if (rightmost > screenWidth) {
-            translate((int) Math.ceil(-(rightmost - screenWidth) / cellSize));
+            do_translate((int) Math.ceil(-(rightmost - screenWidth) / cellSize));
         }
     }
 

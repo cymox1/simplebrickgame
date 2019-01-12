@@ -12,12 +12,14 @@ import java.util.List;
 public class Wall {
     private ArrayList<Cell> wallrects = new ArrayList<Cell>();
     public int completedLines = 0;
+    public int bricks_used = 0;
 
     public void addBrick(Brick brick) {
         for (Rect brickRect : brick.getCells()) {
             wallrects.add(new Cell(brickRect, brick.color));
         }
-        checkCompleteLines(brick.screenHeight, (int) Math.ceil(brick.cellSize));
+        checkCompleteLines(brick.screenHeight, (int) Math.ceil(brick.getCellSize()));
+        bricks_used += 1;
     }
 
     public ArrayList<Cell> getWallRects() {
