@@ -88,6 +88,8 @@ public class SimpleBrickGame extends Activity {
         Brick brick;
         Wall wall;
 
+        int start_drag_at;
+
         private float startTouchX, startTouchY;
         static final int MIN_SWIPE_DISTANCE = 20;
 
@@ -129,7 +131,6 @@ public class SimpleBrickGame extends Activity {
 // In later projects we will have dozens (arrays) of objects.
 // We will also do other things like collision detection.
         public void update() {
-            Brick oldbrick = brick;
             brick = brick.update();
             if (brick.gameIsOver()) {
                 //We have  a new brick which can not even step down.
@@ -168,8 +169,10 @@ public class SimpleBrickGame extends Activity {
 
 
                 //Draw text scores
-                paint.setTextSize((int) brick.cellSize);
-                canvas.drawText("Level: " + level + " Lines: " + wall.completedLines + "/" + winningLines, 10, (int) brick.cellSize, paint);
+                paint.setTextSize((int) brick.getCellSize());
+                canvas.drawText("Level: " + level + " Lines: " + wall.completedLines + "/" + winningLines
+                                + " Bricks used: " + wall.bricks_used
+                        , 10, (int) brick.getCellSize(), paint);
 
                 //draw wall
                 float radius = 15f;
@@ -219,25 +222,26 @@ public class SimpleBrickGame extends Activity {
 // So we can override this method and detect screen touches.
         @Override
         public boolean onTouchEvent(MotionEvent motionEvent) {
+            float hdistance = motionEvent.getX() - startTouchX;
+            float vdistance = motionEvent.getY() - startTouchY;
 
             switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
 
                 // Player has removed finger from screen
+                case MotionEvent.ACTION_MOVE:
+                    brick.translate(hdistance, start_drag_at);
+                    break;
                 case MotionEvent.ACTION_UP:
-                    float hdistance = motionEvent.getX() - startTouchX;
-                    float vdistance = motionEvent.getY() - startTouchY;
-                    if (Math.abs(hdistance) > MIN_SWIPE_DISTANCE || Math.abs(vdistance) > MIN_SWIPE_DISTANCE) {
-                        brick.translate(hdistance, vdistance);
-                    } else {
+                    if (Math.abs(hdistance) < MIN_SWIPE_DISTANCE && Math.abs(vdistance) < MIN_SWIPE_DISTANCE) {
                         brick.rotate();
                     }
                     break;
                 case MotionEvent.ACTION_DOWN:
                     startTouchX = motionEvent.getX();
                     startTouchY = motionEvent.getY();
+                    start_drag_at = brick.getBrickXPosition();
                     break;
             }
-
 
             return true;
         }
