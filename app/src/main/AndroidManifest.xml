@@ -20,7 +20,7 @@
         </activity>
 
         <activity
-            android:name=".AdvertActivity"
+            android:name=".ScoresActivity"
             android:label="@string/title_activity_advert"></activity>
     </application>
 

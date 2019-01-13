@@ -43,8 +43,7 @@ public class SimpleBrickGame extends Activity {
         gameView = new GameView(this);
         setContentView(gameView);
 
-        Intent intent = getIntent();
-        level = intent.getIntExtra("level", 1);
+        level = Scores.getLevelFromPreferences(this) + 1;
     }
 
     // Here is our implementation of GameView
@@ -76,19 +75,11 @@ public class SimpleBrickGame extends Activity {
         Canvas canvas;
         Paint paint;
 
-        // This variable tracks the game frame rate
-        long fps;
-
-        // This is used to help calculate the fps
-        private long timeThisFrame;
-
-        // He can walk at 150 pixels per second
-        float brickSpeedPerSecond = 15;
-
         Brick brick;
         Wall wall;
 
         int start_drag_at;
+        long start_time = System.currentTimeMillis();
 
         private float startTouchX, startTouchY;
         static final int MIN_SWIPE_DISTANCE = 20;
@@ -132,18 +123,21 @@ public class SimpleBrickGame extends Activity {
 // We will also do other things like collision detection.
         public void update() {
             brick = brick.update();
+            Message msg = new Message();
+            boolean send_message = false;
             if (brick.gameIsOver()) {
                 //We have  a new brick which can not even step down.
-                playing = false;
-                Message msg = new Message();
-                msg.obj = "Sorry, you failed level " + level + "!";
-                msg.arg1 = level;
-                handler.sendMessage(msg);
+                msg.arg1 = 0; // failed
+                send_message = true;
             } else if (wall.completedLines >= winningLines) {
+                int duration = (int)(System.currentTimeMillis() - start_time) / 1000;
+                Scores.addScores(getContext(), level, wall.bricks_used, duration);
+                msg.arg1 = 1; // success
+                send_message = true;
+            }
+            if (send_message) {
                 playing = false;
-                Message msg = new Message();
-                msg.obj = "Congrats, you completed level " + level + "!";
-                msg.arg1 = level + 1;
+                msg.arg2 = level;
                 handler.sendMessage(msg);
             }
         }
@@ -170,10 +164,12 @@ public class SimpleBrickGame extends Activity {
 
                 //Draw text scores
                 paint.setTextSize((int) brick.getCellSize());
-                canvas.drawText("Level: " + level + " Lines: " + wall.completedLines + "/" + winningLines
-                                + " Bricks used: " + wall.bricks_used
-                        , 10, (int) brick.getCellSize(), paint);
-
+                long duration = (System.currentTimeMillis() - start_time) / 1000;
+                String lines[] = {"Level: " + level, "Lines: " + wall.completedLines + "/" + winningLines,
+                        "Bricks used: " + wall.bricks_used, "Duration: " + duration + " Secs"};
+                for (int k = 0; k < lines.length; k++) {
+                    canvas.drawText(lines[k], 10, (int) brick.getCellSize() * (k + 1), paint);
+                }
                 //draw wall
                 float radius = 15f;
                 for (Cell c : wall.getWallRects()) {
@@ -272,9 +268,9 @@ public class SimpleBrickGame extends Activity {
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Intent intent = new Intent(SimpleBrickGame.this, AdvertActivity.class);
-            intent.putExtra("message", msg.obj.toString());
-            intent.putExtra("level", msg.arg1);
+            Intent intent = new Intent(SimpleBrickGame.this, ScoresActivity.class);
+            intent.putExtra("success", msg.arg1);
+            intent.putExtra("level", msg.arg2);
             startActivity(intent);
             finish();
         }

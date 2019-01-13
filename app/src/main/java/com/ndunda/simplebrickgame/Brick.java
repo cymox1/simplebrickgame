@@ -49,16 +49,13 @@ public class Brick {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.wall = wall;
-        cellSize = (float) (1 * screenWidth) / ROW_COUNT;
-        float gap = (float) (0 * screenWidth) / (ROW_COUNT - 1);
+        cellSize = (float) screenWidth / ROW_COUNT;
         int brickRow = ROW_COUNT / 2;
         int brick_index = (int) (Math.random() * BRICK_TYPES.length);
         brickType = BRICK_TYPES[brick_index];
         color = COLORS[brick_index];
         rotation = (int) (Math.random() * 4) * 90;
-//        brickType = TYPE_LINE;
-//        rotation = 90;
-        brickXPosition = (int) Math.ceil(brickRow * (cellSize + gap));
+        brickXPosition = (int) Math.ceil(brickRow * cellSize);
         brickYPosition = INITIAL_Y_POS;
     }
 
@@ -251,9 +248,7 @@ public class Brick {
         int ypos = brickYPosition;
         ArrayList<Rect> brickCells = new ArrayList<Rect>();
         if (brickType == TYPE_LINE) {
-            if (rotation % 180 == 90) {
-//                xpos += bsize;
-            } else {
+            if (rotation % 180 == 0) {
                 xpos -= bsize;
             }
             for (int k = 0; k < 4; k++) {
@@ -388,6 +383,7 @@ public class Brick {
         } else if (brickType == TYPE_STEP) {
             if (rotation % 180 == 90) {
                 ypos += bsize;
+                xpos -= bsize;
             }
             for (int k = 0; k < 4; k++) {
                 brickCells.add(new Rect(xpos, ypos, xpos + bsize, ypos + bsize));
@@ -406,8 +402,8 @@ public class Brick {
                 }
             }
         } else if (brickType == TYPE_INV_STEP) {
-            if (rotation % 180 == 0) {
-                xpos += bsize;
+            if (rotation % 180 == 90) {
+                xpos -= bsize;
             }
             for (int k = 0; k < 4; k++) {
                 brickCells.add(new Rect(xpos, ypos, xpos + bsize, ypos + bsize));
