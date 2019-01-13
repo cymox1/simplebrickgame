@@ -3,36 +3,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ndunda.simplebrickgame.AdvertActivity">
+    tools:context="com.ndunda.simplebrickgame.ScoresActivity">
 
     <!-- view for AdMob Interstitial Ad -->
     <TextView
         android:id="@+id/app_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:text="@string/interstitial_ad_sample"
-        android:textColor="@color/NiceButtonBorderColor"
-        android:textStyle="bold"
-        android:textSize="30dp"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="31dp"
+        android:gravity="center"
+        android:text="Sample Message"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/NiceButtonBorderColor"
+        android:textSize="30dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="105dp"
+        android:gravity="center"
+        android:text="Best Scores"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:textSize="25dp" />
 
     <TextView
         android:id="@+id/level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/start_level"
-        android:textColor="@color/colorPrimary"
-        android:textSize="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="130dp"
+        android:gravity="center"
+        android:text="Level 1"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_above="@+id/next_level_button"
-        android:layout_alignLeft="@+id/next_level_button"
-        android:layout_alignStart="@+id/next_level_button"
-        android:layout_marginBottom="105dp" />
+        android:textColor="@color/colorPrimary"
+        android:textSize="23dp" />
 
     <Button
         android:id="@+id/next_level_button"
