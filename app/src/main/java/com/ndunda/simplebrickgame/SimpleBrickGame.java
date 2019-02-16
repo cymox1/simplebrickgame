@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -130,7 +131,7 @@ public class SimpleBrickGame extends Activity {
                 msg.arg1 = 0; // failed
                 send_message = true;
             } else if (wall.completedLines >= winningLines) {
-                int duration = (int)(System.currentTimeMillis() - start_time) / 1000;
+                int duration = (int) (System.currentTimeMillis() - start_time) / 1000;
                 Scores.addScores(getContext(), level, wall.bricks_used, duration);
                 msg.arg1 = 1; // success
                 send_message = true;
@@ -163,6 +164,7 @@ public class SimpleBrickGame extends Activity {
 
 
                 //Draw text scores
+                paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
                 paint.setTextSize((int) brick.getCellSize());
                 long duration = (System.currentTimeMillis() - start_time) / 1000;
                 String lines[] = {"Level: " + level, "Lines: " + wall.completedLines + "/" + winningLines,
@@ -170,6 +172,20 @@ public class SimpleBrickGame extends Activity {
                 for (int k = 0; k < lines.length; k++) {
                     canvas.drawText(lines[k], 10, (int) brick.getCellSize() * (k + 1), paint);
                 }
+
+                // draw grid
+               paint.setColor(Color.argb(20, 0, 0, 255));
+                for (int x = 0; x < brick.screenWidth; x += brick.getCellSize()) {
+                    // vertical lines
+                    canvas.drawLine(x, 0, x, brick.screenHeight, paint);
+                }
+
+                for (int y = brick.screenHeight; y > 0; y -= brick.getCellSize()) {
+                    // horizontal lines
+                    canvas.drawLine(0, y, brick.screenWidth, y, paint);
+                }
+
+
                 //draw wall
                 float radius = 15f;
                 for (Cell c : wall.getWallRects()) {
