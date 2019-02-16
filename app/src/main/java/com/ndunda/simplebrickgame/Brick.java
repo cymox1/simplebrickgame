@@ -53,7 +53,9 @@ public class Brick {
         this.wall = wall;
         cellSize = (float) screenWidth / ROW_COUNT;
         int brickRow = ROW_COUNT / 2;
-        int brick_index = (int) (Math.random() * BRICK_TYPES.length);
+        // for the first 3 bricks, select from the easy types (those with a flat base)
+        int bricks_to_use = wall.bricks_used > 3 ? BRICK_TYPES.length : 5;
+        int brick_index = (int) (Math.random() * bricks_to_use);
         brickType = BRICK_TYPES[brick_index];
         color = COLORS[brick_index];
         rotation = (int) (Math.random() * 4) * 90;
