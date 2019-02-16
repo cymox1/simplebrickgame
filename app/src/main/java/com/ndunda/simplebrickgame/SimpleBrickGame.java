@@ -139,6 +139,7 @@ public class SimpleBrickGame extends Activity {
             if (send_message) {
                 playing = false;
                 msg.arg2 = level;
+                msg.obj = this;
                 handler.sendMessage(msg);
             }
         }
@@ -287,6 +288,8 @@ public class SimpleBrickGame extends Activity {
             Intent intent = new Intent(SimpleBrickGame.this, ScoresActivity.class);
             intent.putExtra("success", msg.arg1);
             intent.putExtra("level", msg.arg2);
+            GameView doneGame = (GameView)msg.obj;
+            intent.putExtra("duration", (int) (System.currentTimeMillis() - doneGame.start_time) / 1000);
             startActivity(intent);
             finish();
         }

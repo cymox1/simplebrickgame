@@ -65,8 +65,9 @@ public class Scores {
         Collections.sort(score_objs);
 
         String score_str = "";
-        for (Score s : score_objs) {
-            score_str = "Level " + s.level + ": " + s.bricksUsed + " Bricks in " + s.duration + " Seconds\n" + score_str;
+        for (int i = 0; i < score_objs.size(); i++) {
+            Score s = score_objs.get(i);
+            score_str = score_objs.size() - i + ": Level " + s.level + " - " + s.bricksUsed + " Bricks in " + s.duration + " Seconds\n" + score_str;
         }
 
         return score_str;
