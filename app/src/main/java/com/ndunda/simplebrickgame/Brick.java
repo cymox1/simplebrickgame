@@ -11,24 +11,26 @@ import java.util.ArrayList;
  */
 public class Brick {
     //Brick Types
-    private static int TYPE_LINE = 1;
-    private static int TYPE_TEE = 3;
-    private static int TYPE_L = 4;
-    private static int TYPE_INV_L = 5;
-    private static int TYPE_PLUS = 6;
-    private static int TYPE_STEP = 7;
-    private static int TYPE_INV_STEP = 8;
+    private static int TYPE_LINE = 0;
+    private static int TYPE_TEE = 1;
+    private static int TYPE_L = 2;
+    private static int TYPE_INV_L = 3;
+    private static int TYPE_PLUS = 4;
+    private static int TYPE_STEP = 5;
+    private static int TYPE_INV_STEP = 6;
+    private static int TYPE_SQUARE = 7;
     private static int ALPHA = 220;
     private static int INITIAL_Y_POS = 0;
-    private static int[] BRICK_TYPES = new int[]{TYPE_LINE, TYPE_TEE, TYPE_L, TYPE_INV_L, TYPE_PLUS, TYPE_STEP, TYPE_INV_STEP};
+    private static int[] BRICK_TYPES = new int[]{TYPE_LINE, TYPE_TEE, TYPE_L, TYPE_INV_L, TYPE_SQUARE, TYPE_PLUS, TYPE_STEP, TYPE_INV_STEP};
     public static int[] COLORS = new int[]{
             Color.argb(ALPHA, 255, 20, 14),
             Color.argb(ALPHA, 0, 229, 238),
             Color.argb(ALPHA, 0, 238, 118),
             Color.argb(ALPHA, 255, 153, 18),
-            Color.argb(ALPHA, 255, 0, 0),
+            Color.argb(ALPHA, 0, 0, 255),
             Color.argb(ALPHA, 191, 62, 255),
-            Color.argb(ALPHA, 127, 255, 0)
+            Color.argb(ALPHA, 200, 200, 0),
+            Color.argb(ALPHA, 255, 50, 150)
     };
     public static int ROW_COUNT = 20;
 
@@ -420,6 +422,15 @@ public class Brick {
                         xpos += bsize;
                     }
                 }
+            }
+        } else if (brickType == TYPE_SQUARE) {
+            for (int k = 0; k < 4; k++) {
+                if (k == 2) {
+                    ypos -= (bsize * 2);
+                    xpos += bsize;
+                }
+                brickCells.add(new Rect(xpos, ypos, xpos + bsize, ypos + bsize));
+                ypos += bsize;
             }
         } else {
             Log.e("getCells", "Unknown brick types " + brickType);
